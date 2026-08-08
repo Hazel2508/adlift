@@ -1,0 +1,26 @@
+# Data files
+data/raw/*
+data/processed/*
+
+# Keep directory placeholders
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local configuration
+.env
+.env.*
+
+# macOS and VS Code
+.DS_Store
+.vscode/
+
+# Local reference materials
+/00a-tutorial-duckdb-polars.ipynb
+/AdLift-Project-Overview.pdf
+/Criteo_Phase_0_Project_Documentation.docx
