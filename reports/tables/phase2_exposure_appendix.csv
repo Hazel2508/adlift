@@ -1,0 +1,4 @@
+delivery_group,sample_size,exposure_rate,visit_rate,conversion_rate
+Control,2096937,0.0,0.03820095691954503,0.0019375880152813366
+"Treatment assigned, unexposed",11454443,0.0,0.034861057844541195,0.0011942963966034839
+"Treatment assigned, exposed",428212,1.0,0.4145376589166114,0.053784106937685074
