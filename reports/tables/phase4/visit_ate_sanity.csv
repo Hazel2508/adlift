@@ -1,0 +1,2 @@
+outcome_name,test_rows,test_ate,phase2_ate,test_minus_phase2_ate,endpoint_gain,expected_endpoint_gain
+visit,2795749,0.010334732308959482,0.0103424031291982,-7.670820238718512e-06,28893.317518041164,28893.317518041164

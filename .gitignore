@@ -24,3 +24,6 @@ __pycache__/
 /00a-tutorial-duckdb-polars.ipynb
 /AdLift-Project-Overview.pdf
 /Criteo_Phase_0_Project_Documentation.docx
+audit_work/
+.obsidian/
+*MacBook Air*

@@ -1,0 +1,4 @@
+outcome_name,model_name,intercept,slope,ranking_changed
+visit,s_learner,-0.00047411021982192924,1.0943428590443154,False
+visit,t_learner,0.0011231565859283808,0.9084419712384602,False
+visit,x_learner,-0.00033357673376948265,1.0580556715810587,False

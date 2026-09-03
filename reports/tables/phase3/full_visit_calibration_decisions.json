@@ -1,0 +1,52 @@
+{
+  "s_learner": {
+    "method": "platt",
+    "arms": {
+      "0": {
+        "raw_brier": 0.02532821334898472,
+        "crossfit_calibrated_brier": 0.025328513234853745,
+        "brier_improvement": -2.998858690261841e-07,
+        "retain": false,
+        "full_validation_mapping_for_test": {
+          "intercept": 0.0010513245360925794,
+          "coefficient": 1.0072615146636963
+        }
+      },
+      "1": {
+        "raw_brier": 0.030464133247733116,
+        "crossfit_calibrated_brier": 0.030464129522442818,
+        "brier_improvement": 3.725290298461914e-09,
+        "retain": true,
+        "full_validation_mapping_for_test": {
+          "intercept": -0.009506775066256523,
+          "coefficient": 0.9990059733390808
+        }
+      }
+    }
+  },
+  "t_learner": {
+    "method": "platt",
+    "arms": {
+      "0": {
+        "raw_brier": 0.025396836921572685,
+        "crossfit_calibrated_brier": 0.02539687417447567,
+        "brier_improvement": -3.725290298461914e-08,
+        "retain": false,
+        "full_validation_mapping_for_test": {
+          "intercept": -0.008201836608350277,
+          "coefficient": 1.000909686088562
+        }
+      },
+      "1": {
+        "raw_brier": 0.030462874099612236,
+        "crossfit_calibrated_brier": 0.030463002622127533,
+        "brier_improvement": -1.2852251529693604e-07,
+        "retain": false,
+        "full_validation_mapping_for_test": {
+          "intercept": -0.008506854996085167,
+          "coefficient": 0.9995506405830383
+        }
+      }
+    }
+  }
+}

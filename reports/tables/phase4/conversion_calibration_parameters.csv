@@ -1,0 +1,4 @@
+outcome_name,model_name,intercept,slope,ranking_changed
+conversion,s_learner,4.269457090412318e-05,0.9984476534365431,False
+conversion,t_learner,0.0001638216331275791,0.8280732404755428,False
+conversion,x_learner,6.241701743066612e-05,0.9203041023196686,False

@@ -1,0 +1,140 @@
+{
+  "source": "/Users/ever/Library/CloudStorage/OneDrive2-ColumbiaUniversityIrvingMedicalCenter/adlift\u9879\u76ee",
+  "spec_hash": "6af08cd7a03f16316acf0404af5d6d089c2cf79f216e00c375b70d466aa01503",
+  "handoff": {
+    "visit": {
+      "rows": 2795749,
+      "phase3_run_hash": "387b8aa30d048f5124cfcfc1818c52be8b8096923715c1c140d8fb81da7509bd",
+      "source_file_sha256": "2716e1bf0fd157a93b5bf86924d9088419dfbac2022c6cd90030220634f616dc"
+    },
+    "conversion": {
+      "rows": 2795749,
+      "phase3_run_hash": "fc0b7e623f3411e84d635edfd313db2f02c3ba601f3f78c20757894e74f2400f",
+      "source_file_sha256": "2716e1bf0fd157a93b5bf86924d9088419dfbac2022c6cd90030220634f616dc"
+    }
+  },
+  "checks": [
+    {
+      "outcome": "visit",
+      "model": "s_learner",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 10550.418088014085,
+      "max_gain_error": 3.637978807091713e-12
+    },
+    {
+      "outcome": "visit",
+      "model": "t_learner",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 10112.690700074614,
+      "max_gain_error": 3.637978807091713e-12
+    },
+    {
+      "outcome": "visit",
+      "model": "x_learner",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 10651.92706698968,
+      "max_gain_error": 3.637978807091713e-12
+    },
+    {
+      "outcome": "visit",
+      "model": "response_propensity",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 9905.879242916431,
+      "max_gain_error": 3.637978807091713e-12
+    },
+    {
+      "outcome": "visit",
+      "model": "constant_ate",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 0.35835372772089613,
+      "max_gain_error": 3.637978807091713e-12
+    },
+    {
+      "outcome": "visit",
+      "model": "segment_uplift",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 9417.956311950686,
+      "max_gain_error": 3.637978807091713e-12
+    },
+    {
+      "outcome": "conversion",
+      "model": "s_learner",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 1323.3346961766915,
+      "max_gain_error": 0.0
+    },
+    {
+      "outcome": "conversion",
+      "model": "t_learner",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 1129.348022603122,
+      "max_gain_error": 0.0
+    },
+    {
+      "outcome": "conversion",
+      "model": "x_learner",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 1210.7067363144433,
+      "max_gain_error": 4.547473508864641e-13
+    },
+    {
+      "outcome": "conversion",
+      "model": "response_propensity",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 1333.3219171071987,
+      "max_gain_error": 2.2737367544323206e-13
+    },
+    {
+      "outcome": "conversion",
+      "model": "constant_ate",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 26.597739402684056,
+      "max_gain_error": 2.2737367544323206e-13
+    },
+    {
+      "outcome": "conversion",
+      "model": "segment_uplift",
+      "rows": 2795749,
+      "curve_points_verified": 20,
+      "deciles_verified": 10,
+      "qini": 1244.729336402459,
+      "max_gain_error": 4.547473508864641e-13
+    }
+  ],
+  "visit": {
+    "rows": 2795749,
+    "treatment_rows": 2376531,
+    "control_rows": 419218,
+    "ate": 0.010334732308959482,
+    "uncertainty_rows_verified": 61
+  },
+  "conversion": {
+    "rows": 2795749,
+    "treatment_rows": 2376531,
+    "control_rows": 419218,
+    "ate": 0.001179091497671258,
+    "uncertainty_rows_verified": 61
+  }
+}

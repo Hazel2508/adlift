@@ -1,0 +1,4 @@
+outcome_name,strategy,target_fraction,selected_rows,incremental_outcomes,analysis_status
+visit,target_none,0.0,0.0,0.0,exploratory_completion_requested_after_initial_test_review
+visit,target_all,1.0,2795749.0,28893.317518041164,exploratory_completion_requested_after_initial_test_review
+visit,random_targeting,,,,exploratory_completion_requested_after_initial_test_review

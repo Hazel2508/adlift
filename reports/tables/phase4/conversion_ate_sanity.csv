@@ -1,0 +1,2 @@
+outcome_name,test_rows,test_ate,phase2_ate,test_minus_phase2_ate,endpoint_gain,expected_endpoint_gain
+conversion,2795749,0.001179091497671258,0.0011518730521316,2.7218445539658196e-05,3296.443875522922,3296.443875522922

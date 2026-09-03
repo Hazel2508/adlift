@@ -1,0 +1,4 @@
+outcome_name,strategy,target_fraction,selected_rows,incremental_outcomes,analysis_status
+conversion,target_none,0.0,0.0,0.0,exploratory_completion_requested_after_initial_test_review
+conversion,target_all,1.0,2795749.0,3296.443875522922,exploratory_completion_requested_after_initial_test_review
+conversion,random_targeting,,,,exploratory_completion_requested_after_initial_test_review
