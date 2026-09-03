@@ -1,0 +1,7 @@
+data_partition,treatment,rows,visit_positive,conversion_positive
+test,0,419218,16055.0,807.0
+test,1,2376531,115576.0,7377.0
+train,0,1258910,48053.0,2455.0
+train,1,7130304,346111.0,22031.0
+validation,0,418809,15997.0,801.0
+validation,1,2375820,115137.0,7303.0

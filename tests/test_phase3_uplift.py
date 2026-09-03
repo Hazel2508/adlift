@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import importlib.util
-import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,13 +10,7 @@ import numpy as np
 import pyarrow.parquet as pq
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = PROJECT_ROOT / "src" / "phase3_uplift_pipeline.py"
-SPEC = importlib.util.spec_from_file_location("phase3_uplift_pipeline", MODULE_PATH)
-phase3 = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
-sys.modules[SPEC.name] = phase3
-SPEC.loader.exec_module(phase3)
+from adlift import models as phase3
 
 
 class Phase3GuardrailTests(unittest.TestCase):
@@ -33,9 +25,7 @@ class Phase3GuardrailTests(unittest.TestCase):
         outcome = np.array([1, 1, 0, 0], dtype=np.uint8)
         mu0_hat = np.array([0.2, 0.3, 0.4, 0.5], dtype=np.float32)
         mu1_hat = np.array([0.7, 0.8, 0.6, 0.4], dtype=np.float32)
-        actual = phase3.construct_x_pseudo_outcome(
-            treatment, outcome, mu0_hat, mu1_hat
-        )
+        actual = phase3.construct_x_pseudo_outcome(treatment, outcome, mu0_hat, mu1_hat)
         expected = np.array([0.8, -0.2, -0.4, 0.4], dtype=np.float32)
         np.testing.assert_allclose(actual, expected)
 

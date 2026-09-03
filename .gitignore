@@ -27,3 +27,7 @@ __pycache__/
 audit_work/
 .obsidian/
 *MacBook Air*
+
+# Generated local checks
+results/tables/phase3/smoke_*
+.ruff_cache/

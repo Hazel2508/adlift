@@ -1,0 +1,27 @@
+{
+  "audit_date": "2026-09-03",
+  "original_analysis_date": "2026-08-25",
+  "assessment": "Share with caveats",
+  "raw_rows_reconciled": 13979592,
+  "test_rows_reconciled": 2795749,
+  "cumulative_points_verified": 240,
+  "decile_effects_verified": 120,
+  "auuc_qini_pairs_verified": 12,
+  "historical_uncertainty_rows_verified": 122,
+  "historical_bootstrap_replicates": 200,
+  "sensitivity_bootstrap_replicates": 2000,
+  "synthetic_guardrail_tests_passed": 11,
+  "companion_notebooks_executed": 3,
+  "fresh_raw_to_model_input_reconciled": true,
+  "visit_smoke_training_passed": true,
+  "full_historical_model_retraining_repeated": false,
+  "fresh_prospective_policy_evaluation_available": false,
+  "code_lint_passed": true,
+  "known_limits": [
+    "Evaluation extended after an initial test review",
+    "Fixed-ranking bootstrap excludes model and policy-selection uncertainty",
+    "No cost/revenue, campaign or time fields",
+    "Historical x_learner is a pooled X-style variant",
+    "30 percent is a restricted volume-based candidate, not an economic optimum"
+  ]
+}

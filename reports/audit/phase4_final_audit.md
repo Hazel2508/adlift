@@ -56,3 +56,10 @@ A separate exploratory rerun increases paired bootstrap draws to 2,000 and adds 
 | Conversion | Top 30% gain | 4.34 | [-16.31, 26.74] |
 
 The nominal signs persist with more draws. Visit has its largest advantage at small targeting fractions; conversion does not establish a benefit over response ranking. These remain pointwise exploratory intervals, especially the marginal Visit 30% comparison.
+
+
+## Restructuring closure
+
+The preparation blocker is resolved in `src/adlift/data.py`. A fresh raw-data build matched all historical feature, outcome, partition and source-ID values across 13,979,592 records. The original incomplete data-audit notebook was replaced by a walkthrough of executed quality, balance, duplicate and partition checks. All three companion notebooks execute top-to-bottom. Generated targeting plots now show fixed-ranking intervals; curves include the zero origin; the overlap title identifies S-Learner; calibration is labeled diagnostic. Eleven analytical tests and the package lint check pass. The visit training route also passed a smoke run. The complete historical models were not retrained.
+
+Reproduce the numerical audit with `uv run python scripts/audit_evaluation.py`; add `--sensitivity` for the separate 2,000-draw extension. See [reproducibility details](../../docs/reproducibility.md).

@@ -2,22 +2,13 @@
 
 from __future__ import annotations
 
-import importlib.util
-import sys
 import unittest
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = PROJECT_ROOT / "src" / "phase4_uplift_evaluation.py"
-SPEC = importlib.util.spec_from_file_location("phase4_uplift_evaluation", MODULE_PATH)
-phase4 = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
-sys.modules[SPEC.name] = phase4
-SPEC.loader.exec_module(phase4)
+from adlift import evaluation as phase4
 
 
 def synthetic_fixture() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -43,9 +34,7 @@ class Phase4EvaluationTests(unittest.TestCase):
         outcome[(groups == 0) & (treatment == 1) & (np.arange(len(groups)) % 10 < 4)] = 1
         outcome[(groups == 0) & (treatment == 0) & (np.arange(len(groups)) % 10 < 2)] = 1
         outcome[(groups == 1) & (np.arange(len(groups)) % 10 < 2)] = 1
-        effects, overall = phase4.observed_effect_by_group(
-            groups, treatment, outcome, 2
-        )
+        effects, overall = phase4.observed_effect_by_group(groups, treatment, outcome, 2)
         self.assertGreater(effects[0], effects[1])
         self.assertGreater(overall, 0.0)
 
@@ -76,9 +65,9 @@ class Phase4EvaluationTests(unittest.TestCase):
             20,
             0.95,
         )
-        counts = phase4.cell_counts(
-            np.zeros(len(outcome), dtype=np.int16), treatment, outcome, 1
-        )[0]
+        counts = phase4.cell_counts(np.zeros(len(outcome), dtype=np.int16), treatment, outcome, 1)[
+            0
+        ]
         _, _, _, _, observed_ate, _, _ = phase4.difference_in_rates(counts, 0.95)
         self.assertAlmostEqual(
             float(curve.iloc[-1]["cumulative_gain"]),
@@ -113,14 +102,10 @@ class Phase4EvaluationTests(unittest.TestCase):
                 "observed_uplift": [0.20, 0.15, 0.10, 0.05],
             }
         )
-        calibrated, parameters = phase4.calibration_table(
-            "visit", "s_learner", table
-        )
+        calibrated, parameters = phase4.calibration_table("visit", "s_learner", table)
         self.assertFalse(parameters["ranking_changed"])
         self.assertGreater(parameters["slope"], 0)
-        self.assertTrue(
-            calibrated["calibrated_predicted_uplift"].is_monotonic_decreasing
-        )
+        self.assertTrue(calibrated["calibrated_predicted_uplift"].is_monotonic_decreasing)
 
     def test_paired_bootstrap_returns_model_differences(self) -> None:
         source_row_id, treatment, outcome, score = synthetic_fixture()
@@ -158,9 +143,7 @@ class Phase4EvaluationTests(unittest.TestCase):
                     "endpoint_gain": endpoint,
                 }
             )
-        policy = cumulative[
-            cumulative["target_fraction"].isin([0.10, 0.20, 0.30])
-        ].copy()
+        policy = cumulative[cumulative["target_fraction"].isin([0.10, 0.20, 0.30])].copy()
         config = {
             "cumulative_step": 0.05,
             "confidence_level": 0.95,
