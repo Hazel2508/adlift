@@ -7,8 +7,7 @@
     "phase3_file": "data/processed/phase3/criteo-uplift-v2.1-phase3.parquet",
     "manifest_file": "data/processed/phase3/manifest.json",
     "expected_rows": 13979592,
-    "partition_seed": "adlift-v1",
-    "crossfit_seed": "adlift-phase3-crossfit-v1"
+    "partition_seed": "adlift-v1"
   },
   "features": [
     "f0",

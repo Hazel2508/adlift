@@ -9,13 +9,12 @@ AUUC, Qini, calibration, and targeting decisions belong to Phase 4.
 from __future__ import annotations
 
 import gc
-import hashlib
-import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import lightgbm as lgb
 import numpy as np
 import pandas as pd
 import polars as pl
@@ -23,7 +22,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 
-from .paths import PROJECT_ROOT
+from .artifacts import canonical_hash, read_json, write_json
+from .paths import PROJECT_ROOT, resolve_path
 
 LEARNERS = ("s_learner", "t_learner", "x_learner")
 
@@ -35,35 +35,6 @@ class PartitionData:
     treatment: np.ndarray
     outcome: np.ndarray | None
     split: str
-
-
-def resolve_path(value: str) -> Path:
-    path = Path(value)
-    return path if path.is_absolute() else PROJECT_ROOT / path
-
-
-def canonical_hash(value: Any) -> str:
-    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-
-def read_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def write_json(path: Path, value: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-
-def require_lightgbm() -> Any:
-    try:
-        import lightgbm as lgb
-    except (ImportError, OSError) as error:
-        raise RuntimeError(
-            "Install requirements-phase3.txt; on macOS LightGBM also requires libomp."
-        ) from error
-    return lgb
 
 
 def load_partition(
@@ -130,7 +101,6 @@ def lightgbm_parameters(config: dict[str, Any], outcome: str, kind: str) -> dict
 
 
 def fit_binary_model(
-    lgb: Any,
     train_features: np.ndarray,
     train_outcome: np.ndarray,
     validation_features: np.ndarray,
@@ -160,7 +130,6 @@ def fit_binary_model(
 
 
 def fit_effect_model(
-    lgb: Any,
     features: np.ndarray,
     pseudo_outcome: np.ndarray,
     parameters: dict[str, Any],
@@ -209,7 +178,6 @@ def train_models(
     config: dict[str, Any], outcome: str, train: PartitionData, validation: PartitionData
 ) -> dict[str, Any]:
     """Fit only S/T/X and produce validation uplift scores."""
-    lgb = require_lightgbm()
     assert train.outcome is not None and validation.outcome is not None
     feature_names = config["features"]
     binary_params = lightgbm_parameters(config, outcome, "binary")
@@ -222,7 +190,6 @@ def train_models(
         (validation.features, validation.treatment.astype(np.float32))
     )
     s_model = fit_binary_model(
-        lgb,
         s_train,
         train.outcome,
         s_validation_factual,
@@ -249,7 +216,6 @@ def train_models(
     control_validation = validation.treatment == 0
     treated_validation = validation.treatment == 1
     t_mu0_model = fit_binary_model(
-        lgb,
         train.features[control_train],
         train.outcome[control_train],
         validation.features[control_validation],
@@ -258,7 +224,6 @@ def train_models(
         feature_names,
     )
     t_mu1_model = fit_binary_model(
-        lgb,
         train.features[treated_train],
         train.outcome[treated_train],
         validation.features[treated_validation],
@@ -283,7 +248,7 @@ def train_models(
     pseudo_outcome = construct_x_pseudo_outcome(
         train.treatment, train.outcome, train_mu0, train_mu1
     )
-    x_model = fit_effect_model(lgb, train.features, pseudo_outcome, effect_params, feature_names)
+    x_model = fit_effect_model(train.features, pseudo_outcome, effect_params, feature_names)
     x_uplift = x_model.predict(validation.features).astype(np.float32)
 
     predictions = {
@@ -485,7 +450,6 @@ def run_development(config: dict[str, Any], outcomes: list[str], mode: str, free
 
 
 def load_boosters(model_directory: Path) -> dict[str, Any]:
-    lgb = require_lightgbm()
     return {
         "s_learner": lgb.Booster(model_file=str(model_directory / "s_learner.txt")),
         "t_mu0": lgb.Booster(model_file=str(model_directory / "t_mu0.txt")),

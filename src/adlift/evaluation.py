@@ -17,8 +17,6 @@ from __future__ import annotations
 
 import copy
 import gc
-import hashlib
-import json
 import math
 from datetime import datetime, timezone
 from pathlib import Path
@@ -33,8 +31,8 @@ import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
 
-from .paths import PROJECT_ROOT
 from . import models as p3
+from .artifacts import canonical_hash, read_json, write_json
 from .metrics import (
     bootstrap_uncertainty,
     calibration_table,
@@ -49,25 +47,7 @@ from .metrics import (
     top_fraction_mask,
 )
 from .plots import save_figures
-
-
-def resolve_path(value: str | Path) -> Path:
-    path = Path(value)
-    return path if path.is_absolute() else PROJECT_ROOT / path
-
-
-def read_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def write_json(path: Path, value: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-
-def canonical_hash(value: Any) -> str:
-    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+from .paths import PROJECT_ROOT, resolve_path
 
 
 def unique_scalar(column: pa.ChunkedArray, label: str) -> Any:
@@ -242,9 +222,7 @@ def fit_response_baseline(config: dict[str, Any], outcome: str) -> dict[str, Any
     if test.outcome is not None:
         raise AssertionError("Response-baseline preparation must not read test outcomes.")
 
-    lgb = p3.require_lightgbm()
     model = p3.fit_binary_model(
-        lgb,
         train.features,
         train.outcome,
         validation.features,

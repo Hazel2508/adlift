@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AdLift interactive report on advertising incrementality and uplift targeting.">
+  <title>AdLift | Advertising Incrementality and Uplift Targeting</title>
+  <link rel="stylesheet" href="assets/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="adlift-report">
+  <a class="skip-link" href="#slide-1">Skip to report</a>
+  <main class="deck" aria-label="AdLift interactive report">
+
+    <section class="slide cover-slide" id="slide-1" data-title="AdLift" aria-labelledby="cover-title">
+      <div class="cover-grid">
+        <div class="cover-copy">
+          <p class="kicker">FINAL PROJECT REPORT · SEPTEMBER 2026</p>
+          <h1 id="cover-title">AdLift</h1>
+          <p class="cover-subtitle">Advertising Incrementality<br>and Uplift Targeting</p>
+          <p class="lede">A reproducible benchmark analysis of randomized advertising effects, heterogeneous treatment-effect ranking, and budget-constrained targeting decisions.</p>
+        </div>
+        <div class="cover-figure" aria-label="Abstract diagram showing randomized assignment, causal lift, and targeting decisions">
+          <svg viewBox="0 0 680 620" role="img" aria-labelledby="cover-diagram-title">
+            <title id="cover-diagram-title">From randomized assignment to targeting policy</title>
+            <path class="orbit" d="M105 330 C160 95 520 70 585 305 C635 490 395 590 185 505 C55 455 45 400 105 330Z"/>
+            <circle class="node node-a" cx="150" cy="370" r="74"/>
+            <circle class="node node-b" cx="340" cy="155" r="92"/>
+            <circle class="node node-c" cx="535" cy="385" r="106"/>
+            <text x="150" y="361" text-anchor="middle">A/B</text>
+            <text x="150" y="389" text-anchor="middle">TEST</text>
+            <text x="340" y="147" text-anchor="middle">CAUSAL</text>
+            <text x="340" y="178" text-anchor="middle">LIFT</text>
+            <text x="535" y="377" text-anchor="middle">TARGETING</text>
+            <text x="535" y="410" text-anchor="middle">POLICY</text>
+            <path class="arrow" d="M212 320 C245 270 270 230 300 208"/>
+            <path class="arrow" d="M419 202 C475 245 497 285 510 321"/>
+          </svg>
+        </div>
+      </div>
+      <aside class="notes">AdLift asks whether randomized advertising creates incremental outcomes and whether a learned causal ranking can allocate a constrained budget better than conventional response targeting.</aside>
+    </section>
+
+    <section class="slide purpose-slide" id="slide-2" data-title="Project purpose" aria-labelledby="purpose-title">
+      <header class="slide-head compact">
+        <p class="kicker">WHY THIS PROJECT</p>
+        <h2 id="purpose-title">Incremental value comes from changing behavior, not merely observing it.</h2>
+      </header>
+      <p class="purpose-intro">Some users would Visit or Convert without advertising. Others are unlikely to respond under either condition. A stronger targeting strategy prioritizes users for whom advertising is expected to create a positive difference.</p>
+      <div class="behavior-spectrum" aria-label="Three response types that motivate uplift targeting">
+        <article class="behavior-type sure-thing">
+          <span class="type-index">01</span>
+          <span class="overline">HIGH RESPONSE, LOW INCREMENT</span>
+          <h3>Would act anyway</h3>
+          <p>Advertising may receive credit for an outcome it did not cause.</p>
+          <div class="counterfactual-pair"><span>Without ad <b>Likely</b></span><span>With ad <b>Likely</b></span></div>
+        </article>
+        <article class="behavior-type lost-cause">
+          <span class="type-index">02</span>
+          <span class="overline">LOW RESPONSE, LOW INCREMENT</span>
+          <h3>Unlikely either way</h3>
+          <p>Serving an ad is unlikely to change the observed outcome.</p>
+          <div class="counterfactual-pair"><span>Without ad <b>Unlikely</b></span><span>With ad <b>Unlikely</b></span></div>
+        </article>
+        <article class="behavior-type persuadable-type">
+          <span class="type-index">03</span>
+          <span class="overline">POSITIVE INCREMENTAL EFFECT</span>
+          <h3>Persuadable</h3>
+          <p>Treatment is expected to increase the probability of response.</p>
+          <div class="counterfactual-pair"><span>Without ad <b>Lower</b></span><span>With ad <b>Higher</b></span></div>
+        </article>
+      </div>
+      <div class="project-mandate">
+        <span class="overline">THIS PROJECT</span>
+        <p>Measures average causal effects, models effect variation across anonymous feature patterns, ranks records by predicted incremental response, and compares uplift targeting with simpler alternatives.</p>
+      </div>
+      <aside class="notes">The business problem is attribution versus incrementality. A conversion after an ad is not necessarily a conversion caused by the ad. The project separates users who would act anyway, users unlikely to act, and users whose behavior may change under treatment.</aside>
+    </section>
+
+    <section class="slide pipeline-slide" id="slide-3" data-title="Analysis loop" aria-labelledby="pipeline-title">
+      <header class="slide-head compact">
+        <p class="kicker">PROJECT ROADMAP</p>
+        <h2 id="pipeline-title">Prediction → Experiment → Policy Validation</h2>
+      </header>
+      <div class="pipeline" aria-label="Four-stage analysis and validation workflow">
+        <article class="pipeline-step step-response">
+          <span class="step-number">01</span>
+          <span class="overline">PREDICT</span>
+          <h3>Response propensity</h3>
+          <p>Estimate who is likely to Visit or Convert.</p>
+        </article>
+        <div class="connector" aria-hidden="true">→</div>
+        <article class="pipeline-step step-experiment">
+          <span class="step-number">02</span>
+          <span class="overline">IDENTIFY</span>
+          <h3>Randomized A/B test</h3>
+          <p>Establish whether advertising creates average causal lift.</p>
+        </article>
+        <div class="connector" aria-hidden="true">→</div>
+        <article class="pipeline-step step-uplift">
+          <span class="step-number">03</span>
+          <span class="overline">RANK</span>
+          <h3>Uplift modeling</h3>
+          <p>Estimate whose behavior is most likely to change.</p>
+        </article>
+        <div class="connector" aria-hidden="true">→</div>
+        <article class="pipeline-step step-policy">
+          <span class="step-number">04</span>
+          <span class="overline">VALIDATE</span>
+          <h3>Targeting policy</h3>
+          <p>Compare against random and response baselines on held-out data.</p>
+        </article>
+      </div>
+      <aside class="notes">These four stages answer different questions. Predictive accuracy alone cannot establish causal lift, and offline targeting performance still requires prospective policy validation.</aside>
+    </section>
+
+    <section class="slide" id="slide-4" data-title="Executive summary" aria-labelledby="summary-title">
+      <header class="slide-head">
+        <p class="kicker">EXECUTIVE SUMMARY</p>
+        <h2 id="summary-title">Advertising works on average. Targeting value depends on the outcome.</h2>
+      </header>
+      <div class="summary-layout">
+        <div class="effect-strip" aria-label="Average treatment effects">
+          <article class="metric-block evidence">
+            <span class="metric-label">VISIT ABSOLUTE LIFT</span>
+            <strong>+1.034<span> pp</span></strong>
+            <small>3.820% control → 4.854% treatment</small>
+          </article>
+          <article class="metric-block evidence">
+            <span class="metric-label">CONVERSION ABSOLUTE LIFT</span>
+            <strong>+0.115<span> pp</span></strong>
+            <small>0.194% control → 0.309% treatment</small>
+          </article>
+        </div>
+        <div class="decision-ledger">
+          <div class="ledger-row supported">
+            <span class="status-mark">SUPPORTED</span>
+            <h3>Visit: S-Learner</h3>
+            <p>At 10% coverage, the ranking estimates 17,919 incremental visits and exceeds response targeting by 3,805 visits.</p>
+          </div>
+          <div class="ledger-row benchmark">
+            <span class="status-mark">KEEP BENCHMARK</span>
+            <h3>Conversion: response propensity</h3>
+            <p>The tested uplift learners do not beat response targeting. The disadvantage is clearest at 5% and 10% coverage.</p>
+          </div>
+          <div class="ledger-row caution">
+            <span class="status-mark">EXPLORATORY</span>
+            <h3>Budget threshold</h3>
+            <p>Coverage scenarios measure capacity tradeoffs. Without cost or revenue, 30% cannot be called economically optimal.</p>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">The first conclusion comes from randomized assignment. The second comes from held-out ranking evaluation. The budget recommendation remains exploratory because the dataset has no economic variables.</aside>
+    </section>
+
+    <section class="slide" id="slide-5" data-title="Business question" aria-labelledby="question-title">
+      <header class="slide-head compact">
+        <p class="kicker">BUSINESS QUESTION</p>
+        <h2 id="question-title">Likelihood is not persuadability.</h2>
+      </header>
+      <div class="question-stage">
+        <div class="question-column response-side">
+          <span class="overline">RESPONSE PREDICTION</span>
+          <h3>Who is likely to act?</h3>
+          <p>Ranks records by predicted Visit or Conversion probability.</p>
+          <div class="person high-response">
+            <span class="person-dot"></span>
+            <div><b>High response</b><small>May act even without an ad</small></div>
+          </div>
+        </div>
+        <div class="versus" aria-hidden="true">≠</div>
+        <div class="question-column uplift-side">
+          <span class="overline">UPLIFT TARGETING</span>
+          <h3>Whose behavior will the ad change?</h3>
+          <p>Ranks records by the estimated difference between treated and untreated outcomes.</p>
+          <div class="person persuadable">
+            <span class="person-dot"></span>
+            <div><b>Persuadable</b><small>Expected to respond because of treatment</small></div>
+          </div>
+        </div>
+      </div>
+      <p class="takeaway-line"><b>Decision:</b> When advertising capacity is limited, evaluate incremental outcomes captured, not response probability alone.</p>
+      <aside class="notes">A high-response user is not automatically a high-uplift user. The project tests whether causal ranking can spend scarce impressions on users whose behavior is more likely to change.</aside>
+    </section>
+
+    <section class="slide" id="slide-6" data-title="Data and experiment" aria-labelledby="experiment-title">
+      <header class="slide-head compact">
+        <p class="kicker">DATA &amp; EXPERIMENTAL DESIGN</p>
+        <h2 id="experiment-title">Random assignment identifies the intent-to-treat effect.</h2>
+      </header>
+      <div class="experiment-grid">
+        <div class="experiment-copy">
+          <div class="sample-line"><strong>13,979,592</strong><span>released records retained</span></div>
+          <div class="arm-flow" aria-label="Randomized treatment and control arms">
+            <div class="assign">RANDOMIZED<br>ASSIGNMENT</div>
+            <div class="split-line"></div>
+            <div class="arm treatment"><b>Treatment</b><span>Platform enters the auction and attempts to serve an ad</span></div>
+            <div class="arm control"><b>Control</b><span>No auction participation under that strategy</span></div>
+          </div>
+          <div class="estimand">
+            <span class="overline">PRIMARY CAUSAL ESTIMAND</span>
+            <div class="formula">E[Y(1) − Y(0)]</div>
+            <p>Estimated by the Treatment outcome rate minus the Control outcome rate.</p>
+          </div>
+        </div>
+        <figure class="figure-panel balance-panel">
+          <img src="assets/images/feature_balance.png" alt="Standardized mean differences across twelve pre-treatment features">
+          <figcaption>Observable balance across 12 pre-treatment features. Largest absolute SMD: <b>0.0488</b>.</figcaption>
+        </figure>
+      </div>
+      <div class="method-band">
+        <span><b>Outcomes:</b> Visit, Conversion</span>
+        <span><b>Inference:</b> two-sided tests, unpooled 95% CIs</span>
+        <span><b>Exposure:</b> post-treatment mediator, not a group definition</span>
+      </div>
+      <aside class="notes">Treatment is assignment, not realized exposure. Conditioning on exposure would break the randomized comparison. CUPED is not reported because no validated pre-period outcome or time field is available.</aside>
+    </section>
+
+    <section class="slide statistics-slide" id="slide-7" data-title="A/B test calculation" aria-labelledby="statistics-title">
+      <header class="slide-head compact">
+        <p class="kicker">A/B TEST CALCULATION</p>
+        <h2 id="statistics-title">Rates, effect sizes, uncertainty, and significance come from the randomized arms.</h2>
+      </header>
+      <div class="statistics-layout">
+        <div class="calculation-stack">
+          <article class="calculation-row">
+            <span class="calc-step">1</span>
+            <div><span class="overline">ARM RATES</span><div class="math-line">p̂₁ = ΣYᵢTᵢ / n₁ &nbsp;&nbsp; p̂₀ = ΣYᵢ(1−Tᵢ) / n₀</div><p>n₁ = 11,882,655 Treatment records; n₀ = 2,096,937 Control records.</p></div>
+          </article>
+          <article class="calculation-row">
+            <span class="calc-step">2</span>
+            <div><span class="overline">EFFECT SIZES</span><div class="math-line">Absolute lift = p̂₁ − p̂₀</div><div class="math-line small-math">Relative lift = (p̂₁ − p̂₀) / p̂₀</div></div>
+          </article>
+          <article class="calculation-row">
+            <span class="calc-step">3</span>
+            <div><span class="overline">INCREMENTAL OUTCOMES</span><div class="math-line">n₁ × (p̂₁ − p̂₀)</div><p>An aggregate counterfactual estimate among treated records.</p></div>
+          </article>
+        </div>
+        <div class="inference-board">
+          <span class="overline">STATISTICAL INFERENCE</span>
+          <div class="null-hypothesis">H₀: p₁ − p₀ = 0</div>
+          <div class="se-formula">SE = √[ p̂₁(1−p̂₁)/n₁ + p̂₀(1−p̂₀)/n₀ ]</div>
+          <div class="inference-grid">
+            <div><b>95% confidence interval</b><span>(p̂₁ − p̂₀) ± 1.96 × SE</span></div>
+            <div><b>Two-sided z test</b><span>z = (p̂₁ − p̂₀) / SE</span></div>
+            <div><b>Multiplicity</b><span>Holm adjustment across Visit and Conversion</span></div>
+            <div><b>Sensitivity check</b><span>Treatment-stratified binary-outcome bootstrap</span></div>
+          </div>
+          <div class="significance-result"><b>Both outcomes reject H₀.</b><span>Visit: z = 65.25, adjusted p &lt; 1e−926<br>Conversion: z = 28.52, adjusted p = 7.308e−179</span></div>
+        </div>
+      </div>
+      <p class="statistics-caveat"><b>Why no CUPED?</b> The release has no validated pre-period outcome or time field suitable for adjustment, so the primary estimate is the unadjusted randomized difference in means.</p>
+      <aside class="notes">For each binary outcome, compute the observed Treatment and Control rates, subtract them for absolute lift, divide by the Control rate for relative lift, and multiply by the treated population for the incremental count. The analytical interval uses an unpooled standard error. A stratified bootstrap closely agrees with the analytical interval.</aside>
+    </section>
+
+    <section class="slide" id="slide-8" data-title="Average incrementality" aria-labelledby="ate-title">
+      <header class="slide-head compact">
+        <p class="kicker">A/B TEST RESULT</p>
+        <h2 id="ate-title">Both outcomes show positive, statistically precise average lift.</h2>
+      </header>
+      <div class="chart-and-table">
+        <figure class="figure-panel main-chart">
+          <img src="assets/images/absolute_lift.png" alt="Absolute treatment effect for Visit and Conversion with 95 percent confidence intervals">
+          <figcaption>Randomized Treatment minus Control effects, percentage points.</figcaption>
+        </figure>
+        <div class="effect-table" role="table" aria-label="Average advertising incrementality">
+          <div class="effect-row table-head" role="row"><span>OUTCOME</span><span>ABS. LIFT</span><span>REL. LIFT</span><span>INCREMENTAL</span></div>
+          <div class="effect-row" role="row"><b>Visit</b><span>1.034 pp</span><span>27.07%</span><span>122,895</span></div>
+          <div class="interval">95% CI: 1.006 to 1.063 pp</div>
+          <div class="effect-row" role="row"><b>Conversion</b><span>0.115 pp</span><span>59.45%</span><span>13,687</span></div>
+          <div class="interval">95% CI: 0.108 to 0.122 pp</div>
+          <p class="table-note">Incremental counts are aggregate counterfactual estimates among treated records.</p>
+        </div>
+      </div>
+      <aside class="notes">The randomized experiment establishes average causal lift. It does not yet answer which individual records should be targeted, which motivates the uplift models.</aside>
+    </section>
+
+
+    <section class="slide" id="slide-9" data-title="Uplift models" aria-labelledby="models-title">
+      <header class="slide-head compact">
+        <p class="kicker">UPLIFT MODELING</p>
+        <h2 id="models-title">Three learners, one held-out ranking test.</h2>
+      </header>
+      <div class="model-map">
+        <article class="model-row selected-model">
+          <div class="model-name"><span>S</span><h3>S-Learner</h3></div>
+          <p>One response function using features and treatment; score each record under both treatment states and subtract.</p>
+          <strong>Preferred for Visit</strong>
+        </article>
+        <article class="model-row">
+          <div class="model-name"><span>T</span><h3>T-Learner</h3></div>
+          <p>Separate response functions for treatment and control; allows arm-specific behavior.</p>
+          <strong>Comparator</strong>
+        </article>
+        <article class="model-row">
+          <div class="model-name"><span>X*</span><h3>Pooled X-style</h3></div>
+          <p>One effect model fitted to pooled imputed-effect targets; more flexible, but not the canonical propensity-blended X-Learner.</p>
+          <strong>Point-Qini leader</strong>
+        </article>
+      </div>
+      <div class="baseline-ruler">
+        <span>BASELINES</span>
+        <b>Response propensity</b>
+        <b>Constant effect</b>
+        <b>Validation-selected segment</b>
+        <b>Random ranking</b>
+      </div>
+      <div class="split-foot"><b>Train 60%</b><span>fit models</span><b>Validation 20%</b><span>develop and select</span><b>Test 20%</b><span>score frozen models, then evaluate</span></div>
+      <aside class="notes">A seeded feature-vector hash prevents identical feature profiles from crossing partitions. Only the twelve pre-treatment features enter model matrices.</aside>
+    </section>
+
+    <section class="slide" id="slide-10" data-title="Evaluation metrics" aria-labelledby="metrics-title">
+      <header class="slide-head compact">
+        <p class="kicker">EVALUATION LOGIC</p>
+        <h2 id="metrics-title">Measure the ranking by incremental outcomes captured.</h2>
+      </header>
+      <div class="metric-sequence">
+        <article><span class="metric-index">1</span><div><h3>Selected-group uplift</h3><p>Treatment rate minus Control rate within the selected records.</p></div></article>
+        <article><span class="metric-index">2</span><div><h3>Cumulative gain</h3><p>Selected records × selected-group uplift.</p></div></article>
+        <article><span class="metric-index">3</span><div><h3>AUUC</h3><p>Area under the cumulative-gain curve.</p></div></article>
+        <article><span class="metric-index">4</span><div><h3>Qini</h3><p>AUUC minus one half of the common 100% endpoint, measuring gain above random.</p></div></article>
+        <article><span class="metric-index">5</span><div><h3>Paired uncertainty</h3><p>Bootstrap the same fixed-ranking cells so strategy differences remain paired.</p></div></article>
+      </div>
+      <div class="endpoint-check">
+        <span class="overline">AUDIT IDENTITY AT 100% COVERAGE</span>
+        <div class="endpoint-formula">Cumulative gain = N<sub>test</sub> × ATE<sub>test</sub></div>
+        <p>A mismatch flags treatment direction, denominator, or population inconsistency.</p>
+      </div>
+      <aside class="notes">Individual treatment effects are unobservable. Phase 4 therefore evaluates randomized Treatment and Control outcomes within score-ranked groups. Bootstrap intervals condition on the fitted models and fixed bins.</aside>
+    </section>
+
+    <section class="slide" id="slide-11" data-title="Visit model comparison" aria-labelledby="visit-model-title">
+      <header class="slide-head compact">
+        <p class="kicker">VISIT MODEL COMPARISON</p>
+        <h2 id="visit-model-title">S-Learner is the best-supported operational Visit ranking.</h2>
+      </header>
+      <div class="comparison-layout">
+        <figure class="figure-panel qini-chart">
+          <img src="assets/images/visit_qini_curve.png" alt="Visit Qini curves for uplift models and baselines">
+          <figcaption>Higher area above the random line indicates better targeting concentration.</figcaption>
+        </figure>
+        <div class="comparison-notes">
+          <div class="qini-number"><span>S-LEARNER QINI</span><strong>10,550</strong></div>
+          <div class="difference-callout supported"><span>VS RESPONSE</span><b>+645</b><small>paired 95% interval: 413 to 883</small></div>
+          <p>The pooled X-style learner has the highest point estimate, but its paired advantage over the simpler S-Learner is unresolved.</p>
+          <div class="decision-stamp">SELECT S-LEARNER</div>
+        </div>
+      </div>
+      <aside class="notes">The simplicity rule favors the S-Learner because the more complex pooled X-style learner is not meaningfully better in paired comparison.</aside>
+    </section>
+
+    <section class="slide" id="slide-12" data-title="Visit targeting decision" aria-labelledby="visit-policy-title">
+      <header class="slide-head compact">
+        <p class="kicker">VISIT TARGETING DECISION</p>
+        <h2 id="visit-policy-title">The tightest budgets show the clearest uplift advantage.</h2>
+      </header>
+      <div class="policy-layout">
+        <div class="policy-table-wrap">
+          <table class="policy-table">
+            <thead><tr><th>Target</th><th>Records</th><th>Uplift</th><th>Incr. visits</th><th>Captured</th><th>Gain vs random</th></tr></thead>
+            <tbody>
+              <tr class="focus-row"><td><b>5%</b></td><td>139,788</td><td>9.535 pp</td><td>13,329</td><td>46.1%</td><td>11,884</td></tr>
+              <tr class="focus-row"><td><b>10%</b></td><td>279,575</td><td>6.409 pp</td><td>17,919</td><td>62.0%</td><td>15,030</td></tr>
+              <tr><td>20%</td><td>559,150</td><td>3.972 pp</td><td>22,208</td><td>76.9%</td><td>16,429</td></tr>
+              <tr><td>30%</td><td>838,725</td><td>2.953 pp</td><td>24,765</td><td>85.7%</td><td>16,097</td></tr>
+              <tr><td>40%</td><td>1,118,300</td><td>2.336 pp</td><td>26,123</td><td>90.4%</td><td>14,565</td></tr>
+              <tr><td>50%</td><td>1,397,875</td><td>1.956 pp</td><td>27,349</td><td>94.7%</td><td>12,902</td></tr>
+              <tr><td>75%</td><td>2,096,812</td><td>1.376 pp</td><td>28,846</td><td>99.8%</td><td>7,176</td></tr>
+              <tr><td>100%</td><td>2,795,749</td><td>1.033 pp</td><td>28,893</td><td>100.0%</td><td>0</td></tr>
+            </tbody>
+          </table>
+          <p class="policy-note"><b>Vs response:</b> +5,400 at 5%; +3,805 at 10%; +566 unresolved at 20%; +521 positive but marginal at 30%.</p>
+        </div>
+        <figure class="figure-panel policy-chart">
+          <img src="assets/images/visit_targeting_comparison.png" alt="Estimated incremental Visit outcomes by ranking strategy at 10, 20, and 30 percent targeting">
+          <figcaption>Estimated incremental outcomes with fixed-ranking uncertainty.</figcaption>
+        </figure>
+      </div>
+      <aside class="notes">At 5% and 10%, the paired intervals clearly favor uplift ranking. At 20%, the difference is unresolved. The 30% result is positive but marginal and is not an economic optimum.</aside>
+    </section>
+
+    <section class="slide" id="slide-13" data-title="Conversion targeting decision" aria-labelledby="conversion-title">
+      <header class="slide-head compact">
+        <p class="kicker">CONVERSION TARGETING DECISION</p>
+        <h2 id="conversion-title">Response propensity remains the supported Conversion ranking.</h2>
+      </header>
+      <div class="conversion-layout">
+        <figure class="figure-panel conversion-qini">
+          <img src="assets/images/conversion_qini_curve.png" alt="Conversion Qini curves for uplift models and baselines">
+          <figcaption>S-Learner leads the uplift learners but does not beat response propensity.</figcaption>
+        </figure>
+        <div class="conversion-evidence">
+          <div class="difference-callout benchmark"><span>S-LEARNER QINI VS RESPONSE</span><b>−9.99</b><small>paired 95% interval: −18.78 to −0.99</small></div>
+          <table class="compact-comparison">
+            <thead><tr><th>Target</th><th>S-Learner vs response</th><th>Interpretation</th></tr></thead>
+            <tbody>
+              <tr><td>5%</td><td>−114 (−186, −37)</td><td>Response better</td></tr>
+              <tr><td>10%</td><td>−89 (−147, −31)</td><td>Response better</td></tr>
+              <tr><td>20%</td><td>−15 (−56, 28)</td><td>Unresolved</td></tr>
+              <tr><td>30%</td><td>+4 (−16, 27)</td><td>Unresolved</td></tr>
+            </tbody>
+          </table>
+          <div class="decision-stamp neutral">KEEP RESPONSE BENCHMARK</div>
+        </div>
+      </div>
+      <aside class="notes">A ranking can concentrate conversions without being a better uplift model. The evidence does not support replacing response propensity for Conversion.</aside>
+    </section>
+
+    <section class="slide" id="slide-14" data-title="Conversion budget scenarios" aria-labelledby="conversion-policy-title">
+      <header class="slide-head compact">
+        <p class="kicker">CONVERSION BUDGET SCENARIOS</p>
+        <h2 id="conversion-policy-title">Response ranking concentrates conversions, but this is not an uplift-model win.</h2>
+      </header>
+      <div class="policy-layout">
+        <div class="policy-table-wrap">
+          <table class="policy-table conversion-policy-table">
+            <thead><tr><th>Target</th><th>Records</th><th>Uplift</th><th>Incr. conv.</th><th>Captured</th><th>Gain vs random</th></tr></thead>
+            <tbody>
+              <tr class="benchmark-row"><td><b>5%</b></td><td>139,788</td><td>1.410 pp</td><td>1,972</td><td>59.8%</td><td>1,807</td></tr>
+              <tr class="benchmark-row"><td><b>10%</b></td><td>279,575</td><td>0.872 pp</td><td>2,439</td><td>74.0%</td><td>2,109</td></tr>
+              <tr><td>20%</td><td>559,150</td><td>0.505 pp</td><td>2,822</td><td>85.6%</td><td>2,162</td></tr>
+              <tr><td>30%</td><td>838,725</td><td>0.360 pp</td><td>3,023</td><td>91.7%</td><td>2,034</td></tr>
+              <tr><td>40%</td><td>1,118,300</td><td>0.281 pp</td><td>3,147</td><td>95.5%</td><td>1,828</td></tr>
+              <tr><td>50%</td><td>1,397,875</td><td>0.230 pp</td><td>3,217</td><td>97.6%</td><td>1,569</td></tr>
+              <tr><td>75%</td><td>2,096,812</td><td>0.157 pp</td><td>3,283</td><td>99.6%</td><td>810</td></tr>
+              <tr><td>100%</td><td>2,795,749</td><td>0.118 pp</td><td>3,296</td><td>100.0%</td><td>0</td></tr>
+            </tbody>
+          </table>
+          <p class="policy-note"><b>Interpretation:</b> these estimates describe the supported response-propensity policy. Concentration in high-response records does not prove that an uplift learner improves Conversion targeting.</p>
+        </div>
+        <figure class="figure-panel policy-chart">
+          <img src="assets/images/conversion_targeting_comparison.png" alt="Estimated incremental Conversion outcomes by ranking strategy at 10, 20, and 30 percent targeting">
+          <figcaption>Estimated incremental outcomes with fixed-ranking uncertainty.</figcaption>
+        </figure>
+      </div>
+      <aside class="notes">Response propensity is shown because it is the supported Conversion ranking. Cost and revenue are unavailable, so these rows remain capacity scenarios rather than ROI thresholds.</aside>
+    </section>
+
+    <section class="slide final-slide" id="slide-15" data-title="Conclusion" aria-labelledby="recommendation-title">
+      <header class="slide-head compact">
+        <p class="kicker">BUSINESS CONCLUSION</p>
+        <h2 id="recommendation-title">Advertising creates value, and Visit uplift targeting concentrates it efficiently.</h2>
+      </header>
+      <div class="conclusion-impact">
+        <div class="average-lift-panel">
+          <span class="overline">RANDOMIZED EXPERIMENT</span>
+          <div class="lift-pair">
+            <div><span>VISIT LIFT</span><strong>+1.034 pp</strong></div>
+            <div><span>CONVERSION LIFT</span><strong>+0.115 pp</strong></div>
+          </div>
+        </div>
+        <div class="top-ten-panel">
+          <span class="overline">TOP 10% · S-LEARNER VISIT POLICY</span>
+          <strong class="hero-impact">17,919 incremental visits</strong>
+          <div class="impact-facts">
+            <div><b>62.0%</b><span>of full-population incremental visits captured</span></div>
+            <div><b>+3,805</b><span>versus conventional response targeting</span></div>
+            <div><b>10%</b><span>of records served</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="business-impact-statement">This creates an opportunity to reduce unnecessary advertising exposure or concentrate a limited budget on users whose behavior is more likely to change.</p>
+      <div class="objective-decisions">
+        <article class="decision-card visit-decision">
+          <span class="action-label">VISIT</span>
+          <div><h3>Advance S-Learner to prospective validation</h3><p>The strongest evidence is at tight coverage, where uplift ranking materially improves allocation over response targeting.</p></div>
+        </article>
+        <article class="decision-card conversion-decision">
+          <span class="action-label">CONVERSION</span>
+          <div><h3>Retain response propensity as the benchmark</h3><p>The tested uplift learners do not outperform it and are significantly worse at the 5% and 10% budgets.</p></div>
+        </article>
+      </div>
+      <p class="caveat-line"><b>Decision:</b> use an objective-specific targeting strategy; the evidence supports uplift targeting for Visit growth, but not for Conversion.</p>
+      <aside class="notes">Advertising increased Visit by 1.034 percentage points and Conversion by 0.115 percentage points. At 10% coverage, the Visit S-Learner captures 62.0% of estimated incremental visits and adds 3,805 visits versus response targeting. Advance it for prospective Visit validation; retain response propensity for Conversion.</aside>
+    </section>
+
+  </main>
+
+  <div class="deck-chrome" aria-label="Presentation controls">
+    <button type="button" id="prev-slide" aria-label="Previous slide">←</button>
+    <span class="chrome-help"><kbd>←</kbd><kbd>→</kbd> navigate · <kbd>O</kbd> overview · <kbd>F</kbd> fullscreen · <kbd>S</kbd> presenter</span>
+    <button type="button" id="next-slide" aria-label="Next slide">→</button>
+  </div>
+
+  <script src="assets/runtime.js"></script>
+  <script>
+    (() => {
+      const sendKey = key => document.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+      document.getElementById('prev-slide').addEventListener('click', () => sendKey('ArrowLeft'));
+      document.getElementById('next-slide').addEventListener('click', () => sendKey('ArrowRight'));
+    })();
+  </script>
+</body>
+</html>

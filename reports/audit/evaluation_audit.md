@@ -1,4 +1,4 @@
-# Phase 4 final audit
+# Evaluation audit
 
 Audit date: 2026-09-03. Original analysis: 2026-08-25.
 
@@ -36,7 +36,7 @@ No new untouched test population, online policy experiment, advertiser cost/reve
 
 ## Sources
 
-[Criteo dataset](https://ailab.criteo.com/criteo-uplift-prediction-dataset/); [Künzel et al., canonical X-Learner](https://arxiv.org/abs/1706.03461). Instructor requirements were recovered from the user's final-session transcript in “项目收尾与展示整理”; teaching materials are retained outside the publication tree.
+[Criteo dataset](https://ailab.criteo.com/criteo-uplift-prediction-dataset/); [Künzel et al., canonical X-Learner](https://arxiv.org/abs/1706.03461). Private teaching notes and working instructions are retained outside the publication tree.
 
 ## 2,000-replicate sensitivity check
 

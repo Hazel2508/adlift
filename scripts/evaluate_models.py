@@ -2,6 +2,7 @@
 
 import argparse
 from adlift import evaluation
+from adlift.artifacts import read_json
 from adlift.paths import PROJECT_ROOT
 
 
@@ -12,7 +13,7 @@ def main():
     )
     parser.add_argument("--outcome", choices=["visit", "conversion", "both"], default="both")
     args = parser.parse_args()
-    config = evaluation.read_json(PROJECT_ROOT / "config/evaluation.json")
+    config = read_json(PROJECT_ROOT / "config/evaluation.json")
     outcomes = config["outcomes"] if args.outcome == "both" else [args.outcome]
     if args.stage in ["prepare", "all"]:
         evaluation.prepare(config, outcomes)

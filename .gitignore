@@ -24,9 +24,25 @@ __pycache__/
 /00a-tutorial-duckdb-polars.ipynb
 /AdLift-Project-Overview.pdf
 /Criteo_Phase_0_Project_Documentation.docx
+# Private phase instructions and working folders kept at repository root
+/[Pp]hase[1-4]/
+/[Pp]hase[1-4].*
+/[Pp]hase[ _-][1-4]/
+/[Pp]hase[ _-][1-4].*
+/docs/ab_testing_interview_guide_zh.md
+/docs/phase1_to_phase2_execution_plan_zh.md
+/docs/phase3_execution_guide_zh.md
+/docs/repository_changes.md
+/reports/audit/phase4_history.md
 audit_work/
 .obsidian/
 *MacBook Air*
+
+# Local agent skills and design context
+/.agents/
+/skills-lock.json
+/PRODUCT.md
+/DESIGN.md
 
 # Generated local checks
 results/tables/phase3/smoke_*

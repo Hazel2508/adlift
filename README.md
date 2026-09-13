@@ -18,7 +18,7 @@ AdLift separates *people likely to act* from *people whose behavior advertising 
 
 ![Visit uplift targeting](results/figures/phase4/visit_targeting_comparison.png)
 
-The original rule selected 30% from the limited 10/20/30 candidate set by total incremental-outcome lower bound. Without cost or revenue data, **30% is not a profit-optimal budget**. See the [final report](reports/final_report.md) and [audit](reports/audit/phase4_final_audit.md).
+The original rule selected 30% from the limited 10/20/30 candidate set by total incremental-outcome lower bound. Without cost or revenue data, **30% is not a profit-optimal budget**. See the [interactive HTML report](reports/html_report/index.html), [PDF report](reports/AdLift_Final_Report.pdf), [editable Word report](reports/AdLift_Final_Report.docx), [Markdown report](reports/final_report.md), and [evaluation audit](reports/audit/evaluation_audit.md).
 
 ## Methodology
 
@@ -35,8 +35,8 @@ The historical artifact called `x_learner` is a pooled single-pseudo-outcome var
 ```text
 adlift/
 ├── config/              # model and evaluation parameters
-├── docs/                # project, modeling, and evaluation rationale
-├── notebooks/           # three reader-facing, executed walkthroughs
+├── docs/                # project, experimental-design, modeling, and evaluation rationale
+├── notebooks/           # four reader-facing, executed walkthroughs
 ├── reports/             # final report and immutable audit evidence
 ├── results/             # generated tables and figures
 ├── scripts/             # process entry points, including main.py
@@ -46,12 +46,27 @@ adlift/
 
 ## Getting started
 
-Verified on macOS; Linux is documented but untested. Requirements: Python 3.12, and [uv](https://docs.astral.sh/uv/).
+Verified on macOS; Linux is documented but untested. The project uses Python 3.12 and
+[uv](https://docs.astral.sh/uv/) for dependency and environment management. Install `uv` on
+macOS or Linux, then restart the terminal so the installer can update `PATH`:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv --version
+```
+
+Homebrew is also supported on macOS:
+
+```bash
+brew install uv
+```
+
+Clone the repository and create the locked project environment:
 
 ```bash
 git clone https://github.com/Hazel2508/adlift.git
 cd adlift
-uv sync
+uv sync --frozen
 mkdir -p data/raw
 ```
 
@@ -64,6 +79,17 @@ data/raw/criteo-uplift-v2.1.csv.gz
 The repository does not distribute the dataset or trained model artifacts. Criteo publishes it under CC BY-NC-SA 4.0 and describes the release as anonymized and non-uniformly subsampled.
 
 ## Running the project
+
+The command-line scripts separate orchestration from the reusable implementation in `src/adlift/`:
+
+| Script | Purpose | Main outputs |
+|---|---|---|
+| `scripts/main.py` | Run the complete data-to-results workflow, or one named stage with `--stage` | All prepared data, fitted local artifacts, tables, and figures |
+| `scripts/prepare_data.py` | Convert the downloaded gzip file, validate its schema and outcomes, and create the fixed train/validation/test split | `data/processed/` and `results/tables/eda/` |
+| `scripts/estimate_incrementality.py` | Estimate randomized treatment-control effects for Visit and Conversion | Average-effect tables and figures |
+| `scripts/train_models.py` | Train S-, T-, and pooled X-style learners, freeze their specifications, and score test features | Local model and prediction artifacts under ignored `data/processed/` paths |
+| `scripts/evaluate_models.py` | Prepare baselines and evaluate frozen rankings with cumulative gain, AUUC/Qini, calibration diagnostics, uncertainty, and targeting policies | `results/tables/phase4/` and `results/figures/phase4/` |
+| `scripts/audit_evaluation.py` | Reconcile saved scores to published Phase 4 tables; optionally run the 2,000-draw sensitivity audit | Audit records under `reports/audit/` |
 
 Run the complete process without opening a notebook:
 
@@ -91,9 +117,10 @@ uv run python -m unittest discover -s tests -v
 
 - [Data and experiment audit](notebooks/01_explore_data.ipynb)
 - [Average incrementality](notebooks/02_estimate_incrementality.ipynb)
-- [Uplift targeting evaluation](notebooks/03_evaluate_targeting.ipynb)
+- [Individual uplift modeling](notebooks/03_train_uplift_models.ipynb)
+- [Uplift targeting evaluation](notebooks/04_evaluate_targeting.ipynb)
 
-Detailed rationale: [overview](docs/project_overview.md), [modeling](docs/modeling.md), [evaluation](docs/evaluation.md), and [reproducibility & tests](docs/reproducibility.md).
+Detailed rationale: [overview](docs/project_overview.md), [experimental design](docs/experimental_design.md), [modeling](docs/modeling.md), [evaluation](docs/evaluation.md), and [reproducibility & tests](docs/reproducibility.md).
 
 ## Known limitations
 

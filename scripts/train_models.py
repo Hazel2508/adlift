@@ -2,6 +2,7 @@
 
 import argparse
 from adlift import models
+from adlift.artifacts import read_json
 from adlift.paths import PROJECT_ROOT
 
 
@@ -14,7 +15,7 @@ def main():
         help="Fit a small train/validation subset without freezing or test scoring.",
     )
     args = parser.parse_args()
-    config = models.read_json(PROJECT_ROOT / "config/models.json")
+    config = read_json(PROJECT_ROOT / "config/models.json")
     outcomes = config["outcomes"] if args.outcome == "both" else [args.outcome]
     models.run_development(
         config, outcomes, "smoke" if args.smoke else "full", freeze=not args.smoke

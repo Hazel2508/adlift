@@ -1,17 +1,16 @@
 """Independent cumulative-sum checks against the historical ranking tables."""
 
-import json
 import math
 import numpy as np
 import pandas as pd
 from . import evaluation as ev
+from .artifacts import read_json, write_json
 from . import metrics as ranking_metrics
 from .paths import PROJECT_ROOT
 
 
 def audit_saved_evaluation() -> dict:
-    ROOT = PROJECT_ROOT
-    config = json.loads((ROOT / "config/evaluation.json").read_text())
+    config = read_json(PROJECT_ROOT / "config/evaluation.json")
     summary = {
         "source": "data/processed/phase3",
         "spec_hash": ev.phase4_spec_hash(config),
@@ -23,7 +22,7 @@ def audit_saved_evaluation() -> dict:
         ids, t, y = ev.load_test_outcomes(config, outcome)
         scores = ev.load_scores(config, outcome, ids)
         assert set(np.unique(t)) == {0, 1} and set(np.unique(y)) == {0, 1}
-        path = ROOT / "results/tables/phase4"
+        path = PROJECT_ROOT / "results/tables/phase4"
         curves = pd.read_csv(path / f"{outcome}_cumulative_gain.csv")
         groups = pd.read_csv(path / f"{outcome}_group_effects.csv")
         metrics = pd.read_csv(path / f"{outcome}_model_metrics.csv")
@@ -99,14 +98,14 @@ def audit_saved_evaluation() -> dict:
             "uncertainty_rows_verified": len(boot),
         }
         print(outcome, summary[outcome], flush=True)
-    (ROOT / "reports/audit").mkdir(parents=True, exist_ok=True)
-    (ROOT / "reports/audit/reconciliation.json").write_text(json.dumps(summary, indent=2) + "\n")
+    (PROJECT_ROOT / "reports/audit").mkdir(parents=True, exist_ok=True)
+    write_json(PROJECT_ROOT / "reports/audit/reconciliation.json", summary)
     print("All row-level reconciliation checks passed.", flush=True)
     return summary
 
 
 def bootstrap_sensitivity(replicates: int = 2000) -> None:
-    config = json.loads((PROJECT_ROOT / "config/evaluation.json").read_text())
+    config = read_json(PROJECT_ROOT / "config/evaluation.json")
     config["bootstrap_replicates"] = replicates
     config["main_decision_rates"] = [0.05, 0.1, 0.2, 0.3]
     directory = PROJECT_ROOT / "results/tables/phase4"

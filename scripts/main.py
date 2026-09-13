@@ -2,6 +2,7 @@
 
 import argparse
 from adlift import data, experiments, models, evaluation
+from adlift.artifacts import read_json
 from adlift.paths import PROJECT_ROOT
 
 
@@ -16,11 +17,11 @@ def main():
     if args.stage in ["all", "experiment"]:
         experiments.run_incrementality()
     if args.stage in ["all", "models"]:
-        config = models.read_json(PROJECT_ROOT / "config/models.json")
+        config = read_json(PROJECT_ROOT / "config/models.json")
         models.run_development(config, config["outcomes"], "full", freeze=True)
         models.run_test_scoring(config, config["outcomes"])
     if args.stage in ["all", "evaluation"]:
-        config = evaluation.read_json(PROJECT_ROOT / "config/evaluation.json")
+        config = read_json(PROJECT_ROOT / "config/evaluation.json")
         evaluation.prepare(config, config["outcomes"])
         evaluation.evaluate(config, config["outcomes"])
 

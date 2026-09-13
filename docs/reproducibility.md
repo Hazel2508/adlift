@@ -42,7 +42,7 @@ The original 11 tests pass in the refactored package. The test count is not a co
 
 ## Notebook role
 
-The three notebooks are executed reader-facing walkthroughs of saved results. They explain the data, average effects and targeting comparison. They are not pipeline dependencies. They can be read on GitHub without downloading the dataset.
+The four notebooks are executed reader-facing walkthroughs of saved results. They explain the data, average effects, uplift-model development, and targeting comparison. They are not pipeline dependencies. They can be read on GitHub without downloading the dataset.
 
 ## Platform and resources
 

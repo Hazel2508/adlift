@@ -9,12 +9,12 @@ from pathlib import Path
 
 import duckdb
 import numpy as np
+import pandas as pd
 
 from .paths import PROJECT_ROOT
 
 FEATURES = [f"f{i}" for i in range(12)]
 BINARY = ["treatment", "conversion", "visit", "exposure"]
-EXPECTED_ROWS = 13_979_592
 
 
 def sql_path(path: Path) -> str:
@@ -82,8 +82,6 @@ def prepare_dataset(root: Path = PROJECT_ROOT) -> None:
                 means.append(mean)
                 vars_.append(var)
             balances.append((f, *means, (means[1] - means[0]) / np.sqrt(sum(vars_) / 2)))
-        import pandas as pd
-
         balance = pd.DataFrame(
             balances, columns=["feature", "control_mean", "treatment_mean", "smd"]
         )

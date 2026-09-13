@@ -37,6 +37,63 @@ Models are judged by cumulative gain and Qini rather than ordinary prediction me
 
 ## Targeting results
 
+The tables below put every reported targeting fraction on one decision scale. Selected-group
+uplift is the treatment-minus-control outcome-rate difference within the selected records.
+Cumulative incremental outcomes equal selected records multiplied by that difference. Uplift
+captured divides cumulative gain by the common 100% endpoint. Gain above random subtracts the gain
+expected from selecting the same population fraction without a ranking. These are test-set estimates
+for the released benchmark; no cost, revenue, or ROI fields are available.
+
+### Visit policy: S-Learner ranking
+
+| Target | Selected records | Selected-group uplift | Cumulative incremental visits | Uplift captured | Gain above random |
+|---:|---:|---:|---:|---:|---:|
+| 5% | 139,788 | 9.535 pp | 13,329 | 46.1% | 11,884 |
+| 10% | 279,575 | 6.409 pp | 17,919 | 62.0% | 15,030 |
+| 20% | 559,150 | 3.972 pp | 22,208 | 76.9% | 16,429 |
+| 30% | 838,725 | 2.953 pp | 24,765 | 85.7% | 16,097 |
+| 40% | 1,118,300 | 2.336 pp | 26,123 | 90.4% | 14,565 |
+| 50% | 1,397,875 | 1.956 pp | 27,349 | 94.7% | 12,902 |
+| 75% | 2,096,812 | 1.376 pp | 28,846 | 99.8% | 7,176 |
+| 100% | 2,795,749 | 1.033 pp | 28,893 | 100.0% | 0 |
+
+For a constrained Visit budget, the ranking concentrates a large share of the estimated total
+incrementality: the top 10% captures 62.0% of the test-set endpoint. Expanding from 10% to 30%
+increases total estimated visits but lowers incremental yield per selected record.
+
+### Conversion policy: response-propensity ranking
+
+| Target | Selected records | Selected-group uplift | Cumulative incremental conversions | Uplift captured | Gain above random |
+|---:|---:|---:|---:|---:|---:|
+| 5% | 139,788 | 1.410 pp | 1,972 | 59.8% | 1,807 |
+| 10% | 279,575 | 0.872 pp | 2,439 | 74.0% | 2,109 |
+| 20% | 559,150 | 0.505 pp | 2,822 | 85.6% | 2,162 |
+| 30% | 838,725 | 0.360 pp | 3,023 | 91.7% | 2,034 |
+| 40% | 1,118,300 | 0.281 pp | 3,147 | 95.5% | 1,828 |
+| 50% | 1,397,875 | 0.230 pp | 3,217 | 97.6% | 1,569 |
+| 75% | 2,096,812 | 0.157 pp | 3,283 | 99.6% | 810 |
+| 100% | 2,795,749 | 0.118 pp | 3,296 | 100.0% | 0 |
+
+Response propensity is shown because it is the supported Conversion ranking. The concentration of
+incremental conversions in its highest-response records does not establish that an uplift learner
+improves Conversion targeting.
+
+### Does uplift ranking beat response targeting at the main budgets?
+
+| Outcome | Uplift learner | Target | Gain difference vs response | Paired 95% interval | Interpretation |
+|---|---|---:|---:|---:|---|
+| Visit | S-Learner | 5% | +5,400 visits | 4,400 to 6,452 | Clear uplift-ranking advantage |
+| Visit | S-Learner | 10% | +3,805 visits | 2,804 to 4,829 | Clear uplift-ranking advantage |
+| Visit | S-Learner | 20% | +566 visits | -104 to 1,281 | Difference unresolved |
+| Visit | S-Learner | 30% | +521 visits | 46 to 1,029 | Positive but marginal |
+| Conversion | S-Learner | 5% | -114 conversions | -186 to -37 | Response ranking is better |
+| Conversion | S-Learner | 10% | -89 conversions | -147 to -31 | Response ranking is better |
+| Conversion | S-Learner | 20% | -15 conversions | -56 to 28 | Difference unresolved |
+| Conversion | S-Learner | 30% | +4 conversions | -16 to 27 | Difference unresolved |
+
+These paired intervals come from the retained 2,000-draw fixed-ranking sensitivity audit. The 5%
+comparison was added after the initial test review, and all budget comparisons remain exploratory.
+
 ### Visits
 
 ![Visit Qini curves](../results/figures/phase4/visit_qini_curve.png)
@@ -72,4 +129,8 @@ Before deployment, freeze one learner, threshold, primary metric, and uncertaint
 - Bootstrap intervals condition on trained models and fixed ranking bins.
 - Evaluation rules were expanded after initial test inspection, so confirmation requires new data.
 
-The complete numerical and methodological audit is in [Phase 4 final audit](audit/phase4_final_audit.md).
+The complete numerical and methodological audit is in the [evaluation audit](audit/evaluation_audit.md).
+
+## Conclusion
+
+The randomized experiment shows that advertising creates measurable incremental value, increasing Visit rate by 1.034 percentage points and Conversion rate by 0.115 percentage points. The targeting analysis further demonstrates that this value can be allocated more efficiently when the business objective is Visit growth: targeting the top 10% of records ranked by the S-Learner captures 62.0% of the estimated full-population incremental visits, generating approximately 17,919 incremental visits and 3,805 more than conventional response targeting while serving only 10% of the population. This indicates a meaningful opportunity to reduce unnecessary advertising exposure or concentrate a limited budget on users whose behavior is more likely to change. The same conclusion does not extend to Conversion, where the tested uplift learners fail to outperform response propensity and perform significantly worse at the tightest budgets. The recommended strategy is therefore objective-specific: advance the S-Learner to prospective validation for Visit-focused campaigns, while retaining response propensity as the Conversion benchmark.
