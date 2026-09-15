@@ -13,7 +13,7 @@ For outcome \(Y\), let \(Y(1)\) and \(Y(0)\) denote the potential outcomes under
 control assignment. The primary average estimand is the intent-to-treat effect:
 
 $$
-\operatorname{ATE}=E[Y(1)-Y(0)].
+ATE=E[Y(1)-Y(0)].
 $$
 
 The released randomized assignment is stored in `treatment`. The observed `exposure` field is a
@@ -116,7 +116,7 @@ population consistency.
 AUUC integrates the cumulative-gain curve. This project defines Qini as:
 
 $$
-\operatorname{Qini}=\operatorname{AUUC}-\tfrac{1}{2}G(1),
+Qini=AUUC-\frac{G(1)}{2},
 $$
 
 the area above the random-targeting triangle. Higher Qini means the ranking concentrates more
